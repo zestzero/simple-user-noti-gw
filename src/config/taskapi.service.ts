@@ -5,6 +5,7 @@ import { ClientOptions, Transport } from '@nestjs/microservices';
 interface EnvironmentVariables {
     TASK_SERVICE_HOST: string;
     TASK_SERVICE_PORT: number;
+    TASK_SERVICE_TIMEOUT: number;
 }
 
 @Injectable()
@@ -23,5 +24,9 @@ export class TaskApiConfigService {
                 }),
             },
         };
+    };
+
+    public getTimeOut = (): number => {
+        return this.configService.get('TASK_SERVICE_TIMEOUT');
     };
 }

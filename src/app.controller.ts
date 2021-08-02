@@ -1,8 +1,8 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Observable, timeout } from 'rxjs';
 import { AppService } from './app.service';
-import { Task } from './model/task';
+import { CreateTask, Task } from './model/task';
 import { IResponse } from './types/response';
 
 @Controller('api')
@@ -19,7 +19,15 @@ export class AppController {
 
     @Get('tasks')
     getTasks(): Observable<Task[]> {
-        const pattern = { cmd: 'getAllTasks' };
+        const pattern = { cmd: 'task_getAll' };
         return this.client.send<Task[]>(pattern, {}).pipe(timeout(5000));
+    }
+
+    @Post('tasks')
+    createTask(@Body() task: CreateTask): Observable<Task> {
+        const pattern = { cmd: 'task_create' };
+        return this.client
+            .send<Task, CreateTask>(pattern, task)
+            .pipe(timeout(5000));
     }
 }
